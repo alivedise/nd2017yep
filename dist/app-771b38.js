@@ -2492,16 +2492,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function shuffle(a) {
-  for (var i = a.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var _ref = [a[j], a[i]];
-    a[i] = _ref[0];
-    a[j] = _ref[1];
-  }
-  return a;
-}
-
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 }
@@ -2537,6 +2527,9 @@ var players = [{
   "class": "druid"
 }, {
   "name": "魯伊逝旎",
+  "class": "druid"
+}, {
+  "name": "欸冷",
   "class": "druid"
 }, {
   "name": "玥舞晴雪",
@@ -2599,7 +2592,7 @@ var AWARDS = [{ //1
   name: '魂月痕的三傑議會之座鑰匙',
   quality: 'trash'
 }, { //3
-  name: '阿歐巴的生態考察之旅',
+  name: '我覺得可以',
   quality: 'trash'
 }, { //4
   name: '我覺得不行',
@@ -2657,7 +2650,7 @@ var App = function (_React$Component) {
       active: 0,
       logs: [],
       drop: null,
-      pool: shuffle(JSON.parse(JSON.stringify(AWARDS)))
+      pool: JSON.parse(JSON.stringify(AWARDS))
     };
     return _this;
   }
@@ -2685,31 +2678,28 @@ var App = function (_React$Component) {
         var logs = prevState.logs;
         var index = getRandomInt(0, _this2.state.pool.length - 1);
         var item = _this2.state.pool[index];
-        var key = s4();
-        prevState.pool.splice(index, 1);
+        prevState.logs.splice(index, 1);
         console.log(item);
-        logs.push([_this2.state.active, item, key]);
-        item.id = key;
+        logs.push([_this2.state.active, item]);
+        item.id = s4();
         return {
           pool: prevState.pool,
           logs: logs,
           drop: item
         };
-      }, function () {});
+      });
     }
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
       var _this3 = this;
 
-      this.log.scrollTop = this.log.scrollHeight;
-      window.clearTimeout(this.timer);
       if (this.state.drop) {
-        this.timer = setTimeout(function () {
+        setTimeout(function () {
           _this3.setState({
             drop: null
           });
-        }, 10000);
+        }, 5000);
       }
     }
   }, {
@@ -2733,7 +2723,7 @@ var App = function (_React$Component) {
       this.state.logs.forEach(function (log) {
         logs.push(_react2.default.createElement(
           "div",
-          { key: log[2] },
+          null,
           _react2.default.createElement(
             "span",
             null,
@@ -2762,14 +2752,6 @@ var App = function (_React$Component) {
           _react2.default.createElement("div", { className: "shadow" })
         );
       }
-      var pool = [];
-      this.state.pool.forEach(function (i) {
-        pool.push(_react2.default.createElement(
-          "span",
-          { className: i.quality },
-          "[\u554F\u865F]"
-        ));
-      });
       return _react2.default.createElement(
         "div",
         { className: "app" },
@@ -2787,42 +2769,31 @@ var App = function (_React$Component) {
         ),
         _react2.default.createElement(
           "div",
-          { className: "bottom" },
+          { className: "chatlog" },
+          logs
+        ),
+        _react2.default.createElement(
+          "div",
+          { className: "control" },
           _react2.default.createElement(
             "div",
-            { className: "chatlog", ref: function ref(dom) {
-                _this4.log = dom;
-              } },
-            logs.length ? logs : '今日公會訊息：2/3(六) ND2017年尾牙！'
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "pool" },
-            pool.length ? pool : '抽光了!'
-          ),
-          _react2.default.createElement(
-            "div",
-            { className: "control" },
+            { className: "buttons" },
             _react2.default.createElement(
-              "div",
-              { className: "buttons" },
-              _react2.default.createElement(
-                "button",
-                {
-                  onClick: function onClick() {
-                    _this4.draw();
-                  } },
-                "Roll!"
-              ),
-              _react2.default.createElement(
-                "button",
-                {
-                  onClick: function onClick() {
-                    _this4.setState({ drop: null, logs: [], pool: shuffle(JSON.parse(JSON.stringify(AWARDS))) });
-                  }
-                },
-                "CLEAR"
-              )
+              "button",
+              {
+                onClick: function onClick() {
+                  _this4.draw();
+                } },
+              "Roll!"
+            ),
+            _react2.default.createElement(
+              "button",
+              {
+                onClick: function onClick() {
+                  _this4.setState({ drop: null, logs: [], pool: JSON.parse(JSON.stringify(AWARDS)) });
+                }
+              },
+              "CLEAR logs"
             )
           )
         )
@@ -8111,4 +8082,4 @@ module.exports = __webpack_require__.p + "default-27df5d.png";
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=app.js.map
+//# sourceMappingURL=app-771b38.js.map

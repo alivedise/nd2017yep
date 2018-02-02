@@ -8,6 +8,25 @@ import eona from '../styles/eona.png';
 import agg from '../styles/agg.png';
 import defaulticon from '../styles/default.png';
 
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
+function guid() {
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -43,10 +62,6 @@ const players = [
     },
     {
       "name": "魯伊逝旎",
-      "class": "druid"
-    },
-    {
-      "name": "欸冷",
       "class": "druid"
     },
     {
@@ -130,7 +145,7 @@ const AWARDS = [
     quality: 'trash'
   },
   {//3
-    name: '我覺得可以',
+    name: '阿歐巴的生態考察之旅',
     quality: 'trash'
   },
   {//4
@@ -195,7 +210,7 @@ class App extends React.Component {
       active: 0,
       logs: [],
       drop: null,
-      pool: JSON.parse(JSON.stringify(AWARDS))
+      pool: shuffle(JSON.parse(JSON.stringify(AWARDS)))
     };
   }
 
@@ -209,10 +224,7 @@ class App extends React.Component {
     })
   }
 
-  draw() {    
-    if (this.state.drop) {
-      return;
-    }
+  draw() {
     let player = players[this.state.active];
     this.setState((prevState) => {
       if (!prevState.pool.length) {
@@ -221,27 +233,34 @@ class App extends React.Component {
       let logs = prevState.logs;
       let index = getRandomInt(0, this.state.pool.length - 1);
       let item = this.state.pool[index];
-      prevState.logs.splice(index, 1);
+      let key = s4();
+      prevState.pool.splice(index, 1);
       console.log(item);
       logs.push([
         this.state.active,
-        item
+        item,
+        key
       ]);
+      item.id = key;
       return {
         pool: prevState.pool,
         logs: logs,
         drop: item
       };
+    }, () => {
+
     });
   }
 
   componentDidUpdate() {
+    this.log.scrollTop = this.log.scrollHeight;
+    window.clearTimeout(this.timer);
     if (this.state.drop) {
-      setTimeout(() => {
+      this.timer = setTimeout(() => {
         this.setState({
           drop: null
         })
-      }, 5000);
+      }, 10000);
     }
   }
 
@@ -261,7 +280,7 @@ class App extends React.Component {
     let logs = [];
     this.state.logs.forEach((log) => {
       logs.push(
-        <div>
+        <div key={log[2]}>
           <span>{`${players[log[0]].name}拾取了`}</span>
           <span className={log[1].quality}>
             {`[${log[1].name}]`}
@@ -273,7 +292,7 @@ class App extends React.Component {
     let drop = null;
     if (this.state.drop) {
       drop = (        
-        <div className="img-container" data-quality={this.state.drop.quality}>
+        <div key={this.state.drop.id} className="img-container" data-quality={this.state.drop.quality}>
           <img className="icon" src={this.state.drop.img || defaulticon} />
           <div className="background" data-quality={this.state.drop.quality} />
           <div className={"name " + this.state.drop.quality}>{this.state.drop.name}</div>
@@ -281,6 +300,10 @@ class App extends React.Component {
         </div>
       )
     }
+    let pool = [];
+    this.state.pool.forEach((i) => {
+      pool.push(<span className={i.quality}>[問號]</span>)
+    });
     return (
       <div className="app">
         <div className="placeholder">
@@ -289,23 +312,29 @@ class App extends React.Component {
         <div className="raid" onClick={(evt)=>{this.handleClick(evt)}}>
           {dom}
         </div>
-        <div className="chatlog">
-          {logs}
-        </div>
-        <div className="control">
-          <div className="buttons">
-            <button
-              disabled={this.state.drop ? 'true' : null}
-              onClick={() => {this.draw()}}>
-              Roll!
-            </button>
-            <button
-              onClick={() => {
-                this.setState({drop: null, logs:[], pool: JSON.parse(JSON.stringify(AWARDS))})
-              }}
-            >
-              CLEAR logs
-            </button>
+        <div className="bottom">
+          <div className="chatlog" ref={(dom)=>{this.log=dom}}>
+            {logs.length ? logs : '今日公會訊息：2/3(六) ND2017年尾牙！'}
+          </div>
+          <div className="pool">
+            {
+              pool.length ? pool : '抽光了!'
+            }
+          </div>
+          <div className="control">
+            <div className="buttons">
+              <button
+                onClick={() => {this.draw()}}>
+                Roll!
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({drop: null, logs:[], pool: shuffle(JSON.parse(JSON.stringify(AWARDS)))})
+                }}
+              >
+                CLEAR
+              </button>
+            </div>
           </div>
         </div>
       </div>

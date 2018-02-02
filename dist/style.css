@@ -35,9 +35,9 @@ body {
   color: #a330c9; }
 
 .app {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center; }
 
 .legendary {
@@ -56,12 +56,30 @@ body {
   color: silver; }
 
 .chatlog {
+  float: left;
+  display: inline-block;
+  width: 350px;
+  height: 250px;
+  overflow-y: scroll;
   background-color: #404347;
-  margin: 20px 20px 20px 20px;
+  margin-top: 35px;
   padding: 5px;
   color: lime;
-  width: 100%;
   box-sizing: border-box; }
+
+.pool {
+  float: right;
+  display: inline-block;
+  width: 350px;
+  height: 250px;
+  background-color: #404347;
+  margin-top: 35px;
+  padding: 5px;
+  color: white;
+  box-sizing: border-box; }
+
+.bottom {
+  position: relative; }
 
 .raid {
   width: 600px;
@@ -128,6 +146,9 @@ body {
       background-image: url(./titan-36f690.png); }
 
 .control {
+  position: absolute;
+  bottom: 0;
+  left: 0;
   width: 100%;
   display: flex;
   padding: 10px;
