@@ -149,7 +149,7 @@ const AWARDS = [
     quality: 'trash'
   },
   {//4
-    name: '我覺得不行',
+    name: '沒時間了快上車',
     quality: 'trash'
   },
   {//5
@@ -199,6 +199,18 @@ const AWARDS = [
     name: '伊歐娜的精煉',
     quality: 'epic',
     img: eona
+  },
+  {//15
+    name: '逼逼波的鬼母坐騎',
+    quality: 'trash'
+  },
+  {//16
+    name: '吉祥物的核心橘',
+    quality: 'trash'
+  },
+  {//17
+    name: '大頭的自由祝福',
+    quality: 'trash'
   }
 ]
 

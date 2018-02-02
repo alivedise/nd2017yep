@@ -2602,7 +2602,7 @@ var AWARDS = [{ //1
   name: '阿歐巴的生態考察之旅',
   quality: 'trash'
 }, { //4
-  name: '我覺得不行',
+  name: '沒時間了快上車',
   quality: 'trash'
 }, { //5
   name: 'YTYS的家計簿',
@@ -2642,6 +2642,15 @@ var AWARDS = [{ //1
   name: '伊歐娜的精煉',
   quality: 'epic',
   img: _eona2.default
+}, { //15
+  name: '逼逼波的鬼母坐騎',
+  quality: 'trash'
+}, { //16
+  name: '吉祥物的核心橘',
+  quality: 'trash'
+}, { //17
+  name: '大頭的自由祝福',
+  quality: 'trash'
 }];
 
 var App = function (_React$Component) {
