@@ -83,7 +83,7 @@ body {
 }
 
 .raid {
-  width: 100%;
+  width: 600px;
   display: flex;
   flex-wrap: wrap;
   .player {
@@ -103,6 +103,60 @@ body {
   }
 }
 
+@keyframes fadein {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.placeholder {
+  height: 200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .img-container {
+    animation: fadein 1s forwards cubic-bezier(0.3, 0, 0.3, 1);
+    height: 104px;
+    width: 311px;
+    &[data-quality="legendary"] {
+      width: 377px;
+      height: 144px;
+      .icon {
+        left: 75px;
+        top: 43px;
+        border-radius: 3px;
+      }
+      .name {
+        left: 140px;
+        top: 66px;
+      }
+    }
+    position: relative;
+    .icon {
+      position: absolute;
+      top: 22px;
+      left: 30px;
+      width: 55px;
+      height: 55px;
+    }
+    .name {
+      position: absolute;
+      top: 45px;
+      left: 100px;
+      font-weight: bold;
+    }
+    .background[data-quality="legendary"] {
+      background-image: url(./leg.png);
+    }
+    .background {
+      height: 100%;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-image: url(./titan.png);
+    }
+  }
+}
+
 .control {
   width: 100%;
   display: flex;
@@ -112,9 +166,6 @@ body {
   flex-direction: column;
   .drop {
     text-align: center;
-  }
-  .img-container {
-    position: relative;
   }
   .shadow {
     border-radius: 5px;
@@ -136,5 +187,8 @@ body {
     background-color: #404347;
     color: white;
     cursor: pointer;
+    &[disabled] {
+      color: silver;
+    }
   }
 }

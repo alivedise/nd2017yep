@@ -3,6 +3,11 @@ import ReactDOM from "react-dom";
 import img from "../styles/leg.png";
 import "../styles/style.scss";
 
+import ship from '../styles/ship.jpg';
+import eona from '../styles/eona.png';
+import agg from '../styles/agg.png';
+import defaulticon from '../styles/default.png';
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -115,38 +120,70 @@ const players = [
   ];
 
 const AWARDS = [
-  {
+  {//1
     name: '阿曼蘇爾的遊艇',
     quality: 'legendary',
-    count: 1
+    img: ship
   },
-  {
-    name: '魂月痕',
+  {//2
+    name: '魂月痕的三傑議會之座鑰匙',
     quality: 'trash'
   },
-  {
+  {//3
     name: '我覺得可以',
     quality: 'trash'
   },
-  {
+  {//4
     name: '我覺得不行',
     quality: 'trash'
   },
-  {
-    name: '666',
-    quality: 'normal'
+  {//5
+    name: 'YTYS的家計簿',
+    quality: 'trash'
   },
-  {
-    name: '欸冷的零用錢',
-    quality: 'blue'
+  {//6
+    name: '欸冷的一單',
+    quality: 'rare'
   },
-  {
+  {//7
     name: '阿格拉瑪的持久',
-    quality: 'epic'
+    quality: 'epic',
+    img: agg
   },
-  {
+  {//8
     name: '伊歐娜的精煉',
-    quality: 'epic'
+    quality: 'epic',
+    img: eona
+  },
+  {//9
+    name: '阿格拉瑪的持久',
+    quality: 'epic',
+    img: agg
+  },
+  {//10
+    name: '伊歐娜的精煉',
+    quality: 'epic',
+    img: eona
+  },
+  {//11
+    name: '阿格拉瑪的持久',
+    quality: 'epic',
+    img: agg
+  },
+  {//12
+    name: '伊歐娜的精煉',
+    quality: 'epic',
+    img: eona
+  },
+  {//13
+    name: '阿格拉瑪的持久',
+    quality: 'epic',
+    img: agg
+  },
+  {//14
+    name: '伊歐娜的精煉',
+    quality: 'epic',
+    img: eona
   }
 ]
 
@@ -156,8 +193,10 @@ class App extends React.Component {
     this.state = {
       players: [],
       active: 0,
-      logs: []
-    }
+      logs: [],
+      drop: null,
+      pool: JSON.parse(JSON.stringify(AWARDS))
+    };
   }
 
   componentDidMount() {
@@ -165,21 +204,45 @@ class App extends React.Component {
   }
 
   handleClick(evt) {
-    console.log(evt);
     this.setState({
       active: +evt.target.dataset.index
     })
   }
 
-  draw() {
+  draw() {    
+    if (this.state.drop) {
+      return;
+    }
     let player = players[this.state.active];
     this.setState((prevState) => {
+      if (!prevState.pool.length) {
+        return;
+      } 
       let logs = prevState.logs;
-      logs.push([this.state.active, getRandomInt(0, AWARDS.length - 1)]);
+      let index = getRandomInt(0, this.state.pool.length - 1);
+      let item = this.state.pool[index];
+      prevState.logs.splice(index, 1);
+      console.log(item);
+      logs.push([
+        this.state.active,
+        item
+      ]);
       return {
-        logs: logs
+        pool: prevState.pool,
+        logs: logs,
+        drop: item
       };
     });
+  }
+
+  componentDidUpdate() {
+    if (this.state.drop) {
+      setTimeout(() => {
+        this.setState({
+          drop: null
+        })
+      }, 5000);
+    }
   }
 
   render() {
@@ -200,15 +263,29 @@ class App extends React.Component {
       logs.push(
         <div>
           <span>{`${players[log[0]].name}拾取了`}</span>
-          <span className={AWARDS[log[1]].quality}>
-            {`[${AWARDS[log[1]].name}]`}
+          <span className={log[1].quality}>
+            {`[${log[1].name}]`}
           </span>
           ！
         </div>
       );
     });
+    let drop = null;
+    if (this.state.drop) {
+      drop = (        
+        <div className="img-container" data-quality={this.state.drop.quality}>
+          <img className="icon" src={this.state.drop.img || defaulticon} />
+          <div className="background" data-quality={this.state.drop.quality} />
+          <div className={"name " + this.state.drop.quality}>{this.state.drop.name}</div>
+          <div className="shadow" />
+        </div>
+      )
+    }
     return (
       <div className="app">
+        <div className="placeholder">
+          {drop}
+        </div>
         <div className="raid" onClick={(evt)=>{this.handleClick(evt)}}>
           {dom}
         </div>
@@ -216,15 +293,17 @@ class App extends React.Component {
           {logs}
         </div>
         <div className="control">
-          <div className="img-container">
-            <img className="drop" src={img} />
-            <div className="shadow" />
-          </div>
           <div className="buttons">
-            <button onClick={() => {this.draw()}}>
+            <button
+              disabled={this.state.drop ? 'true' : null}
+              onClick={() => {this.draw()}}>
               Roll!
             </button>
-            <button onClick={() => {this.setState({logs:[]})}}>
+            <button
+              onClick={() => {
+                this.setState({drop: null, logs:[], pool: JSON.parse(JSON.stringify(AWARDS))})
+              }}
+            >
               CLEAR logs
             </button>
           </div>
@@ -234,4 +313,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+window.app = ReactDOM.render(<App />, document.getElementById("root"));

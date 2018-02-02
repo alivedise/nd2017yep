@@ -2468,6 +2468,22 @@ var _leg2 = _interopRequireDefault(_leg);
 
 __webpack_require__(28);
 
+var _ship = __webpack_require__(29);
+
+var _ship2 = _interopRequireDefault(_ship);
+
+var _eona = __webpack_require__(30);
+
+var _eona2 = _interopRequireDefault(_eona);
+
+var _agg = __webpack_require__(31);
+
+var _agg2 = _interopRequireDefault(_agg);
+
+var _default = __webpack_require__(34);
+
+var _default2 = _interopRequireDefault(_default);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2560,31 +2576,57 @@ var players = [{
   "class": "shaman"
 }];
 
-var AWARDS = [{
+var AWARDS = [{ //1
   name: '阿曼蘇爾的遊艇',
   quality: 'legendary',
-  count: 1
-}, {
-  name: '魂月痕',
+  img: _ship2.default
+}, { //2
+  name: '魂月痕的三傑議會之座鑰匙',
   quality: 'trash'
-}, {
+}, { //3
   name: '我覺得可以',
   quality: 'trash'
-}, {
+}, { //4
   name: '我覺得不行',
   quality: 'trash'
-}, {
-  name: '666',
-  quality: 'normal'
-}, {
-  name: '欸冷的零用錢',
-  quality: 'blue'
-}, {
+}, { //5
+  name: 'YTYS的家計簿',
+  quality: 'trash'
+}, { //6
+  name: '欸冷的一單',
+  quality: 'rare'
+}, { //7
   name: '阿格拉瑪的持久',
-  quality: 'epic'
-}, {
+  quality: 'epic',
+  img: _agg2.default
+}, { //8
   name: '伊歐娜的精煉',
-  quality: 'epic'
+  quality: 'epic',
+  img: _eona2.default
+}, { //9
+  name: '阿格拉瑪的持久',
+  quality: 'epic',
+  img: _agg2.default
+}, { //10
+  name: '伊歐娜的精煉',
+  quality: 'epic',
+  img: _eona2.default
+}, { //11
+  name: '阿格拉瑪的持久',
+  quality: 'epic',
+  img: _agg2.default
+}, { //12
+  name: '伊歐娜的精煉',
+  quality: 'epic',
+  img: _eona2.default
+}, { //13
+  name: '阿格拉瑪的持久',
+  quality: 'epic',
+  img: _agg2.default
+}, { //14
+  name: '伊歐娜的精煉',
+  quality: 'epic',
+  img: _eona2.default
 }];
 
 var App = function (_React$Component) {
@@ -2598,7 +2640,9 @@ var App = function (_React$Component) {
     _this.state = {
       players: [],
       active: 0,
-      logs: []
+      logs: [],
+      drop: null,
+      pool: JSON.parse(JSON.stringify(AWARDS))
     };
     return _this;
   }
@@ -2609,7 +2653,6 @@ var App = function (_React$Component) {
   }, {
     key: "handleClick",
     value: function handleClick(evt) {
-      console.log(evt);
       this.setState({
         active: +evt.target.dataset.index
       });
@@ -2619,26 +2662,51 @@ var App = function (_React$Component) {
     value: function draw() {
       var _this2 = this;
 
+      if (this.state.drop) {
+        return;
+      }
       var player = players[this.state.active];
       this.setState(function (prevState) {
+        if (!prevState.pool.length) {
+          return;
+        }
         var logs = prevState.logs;
-        logs.push([_this2.state.active, getRandomInt(0, AWARDS.length - 1)]);
+        var index = getRandomInt(0, _this2.state.pool.length - 1);
+        var item = _this2.state.pool[index];
+        prevState.logs.splice(index, 1);
+        console.log(item);
+        logs.push([_this2.state.active, item]);
         return {
-          logs: logs
+          pool: prevState.pool,
+          logs: logs,
+          drop: item
         };
       });
     }
   }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate() {
+      var _this3 = this;
+
+      if (this.state.drop) {
+        setTimeout(function () {
+          _this3.setState({
+            drop: null
+          });
+        }, 5000);
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var dom = [];
       var all = "";
       players.forEach(function (player, index) {
         dom.push(_react2.default.createElement(
           "div",
-          { className: "player " + (index === _this3.state.active ? 'focus' : ''),
+          { className: "player " + (index === _this4.state.active ? 'focus' : ''),
             key: index,
             "data-index": index,
             "data-class": player["class"] },
@@ -2657,19 +2725,39 @@ var App = function (_React$Component) {
           ),
           _react2.default.createElement(
             "span",
-            { className: AWARDS[log[1]].quality },
-            "[" + AWARDS[log[1]].name + "]"
+            { className: log[1].quality },
+            "[" + log[1].name + "]"
           ),
           "\uFF01"
         ));
       });
+      var drop = null;
+      if (this.state.drop) {
+        drop = _react2.default.createElement(
+          "div",
+          { className: "img-container", "data-quality": this.state.drop.quality },
+          _react2.default.createElement("img", { className: "icon", src: this.state.drop.img || _default2.default }),
+          _react2.default.createElement("div", { className: "background", "data-quality": this.state.drop.quality }),
+          _react2.default.createElement(
+            "div",
+            { className: "name " + this.state.drop.quality },
+            this.state.drop.name
+          ),
+          _react2.default.createElement("div", { className: "shadow" })
+        );
+      }
       return _react2.default.createElement(
         "div",
         { className: "app" },
         _react2.default.createElement(
           "div",
+          { className: "placeholder" },
+          drop
+        ),
+        _react2.default.createElement(
+          "div",
           { className: "raid", onClick: function onClick(evt) {
-              _this3.handleClick(evt);
+              _this4.handleClick(evt);
             } },
           dom
         ),
@@ -2683,25 +2771,23 @@ var App = function (_React$Component) {
           { className: "control" },
           _react2.default.createElement(
             "div",
-            { className: "img-container" },
-            _react2.default.createElement("img", { className: "drop", src: _leg2.default }),
-            _react2.default.createElement("div", { className: "shadow" })
-          ),
-          _react2.default.createElement(
-            "div",
             { className: "buttons" },
             _react2.default.createElement(
               "button",
-              { onClick: function onClick() {
-                  _this3.draw();
+              {
+                disabled: this.state.drop ? 'true' : null,
+                onClick: function onClick() {
+                  _this4.draw();
                 } },
               "Roll!"
             ),
             _react2.default.createElement(
               "button",
-              { onClick: function onClick() {
-                  _this3.setState({ logs: [] });
-                } },
+              {
+                onClick: function onClick() {
+                  _this4.setState({ drop: null, logs: [], pool: JSON.parse(JSON.stringify(AWARDS)) });
+                }
+              },
               "CLEAR logs"
             )
           )
@@ -2713,7 +2799,7 @@ var App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-_reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById("root"));
+window.app = _reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById("root"));
 
 /***/ }),
 /* 18 */
@@ -7964,6 +8050,32 @@ module.exports = __webpack_require__.p + "leg-b073f9.png";
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "ship-c0a83f.jpg";
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "eona-274204.png";
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "agg-f4b8ee.png";
+
+/***/ }),
+/* 32 */,
+/* 33 */,
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__.p + "default-27df5d.png";
 
 /***/ })
 /******/ ]);
